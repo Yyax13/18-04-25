@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
+import pool from './db';
 
 const PostgreSQLStore = connectPgSimple(session);
 
