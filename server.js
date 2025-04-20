@@ -1,12 +1,19 @@
 import 'dotenv/config'
 import e from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path'; 
 import path from 'path';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
-import pool from './db';
+import pool from './db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const PostgreSQLStore = connectPgSimple(session);
+
+import signUpTravelerRoute from './routes/travelers/signUpTravelerRoute.js'
 
 const app = e();
 app.use(cors());
@@ -36,3 +43,8 @@ app.use(session({
 
 const PORT = process.env.PORT || 3001;
 
+app.use(signUpTravelerRoute);
+
+app.listen(PORT,
+    console.log(`Server running on port: ${PORT}!`)
+);

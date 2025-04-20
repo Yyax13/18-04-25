@@ -1,11 +1,10 @@
 function genResult() {
-    const result = {
+    return {
         status: null,
         success: null,
         message: null,
         others: {}
-    };
-    return result
+    }
 };
 
 export default genResult;

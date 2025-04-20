@@ -1,6 +1,7 @@
 import 'dotenv/config';
-import { Pool } from 'pg';
-import genResult from './results';
+const { Pool } = pg
+import pg from 'pg';
+import genResult from './results.js';
 
 const pool = new Pool({
     host: process.env.PGSQL_HOST,
@@ -35,32 +36,51 @@ async function createTables() {
             2: In maintenance
         */
         await pool.query(`
-            CREATE IF NOT EXISTS TABLE planes (
+            CREATE TABLE IF NOT EXISTS planes (
                 PID SERIAL UNIQUE PRIMARY KEY,
                 YearMade varchar(255) NOT NULL,
                 Model varchar(255) NOT NULL,
                 Capacity INT NOT NULL,
-                Status INT NOT NULL
-        );`);
+                Status INT NOT NULL,
+                CostOnBuy INT NOT NULL
+            );
+        `);
         console.log(`Table 'planes' successfuly created!`);
 
+        /* TravelCost explanation:
+            Every new travel, ll have a cost:
+            14% of plane cost (on buy)
+        */
         await pool.query(`
-            CREATE IF NOT EXISTS TABLE travels (
+            CREATE TABLE IF NOT EXISTS travels (
                 TID SERIAL UNIQUE PRIMARY KEY,
                 PID INT NOT NULL UNIQUE,
-                TravelDate DATE NOT NULL,
-                Travelers INT[] NOT NULL
+                TravelDateTime TIMESTAMP NOT NULL,
+                Travelers INT[],
+                TravelCost FLOAT NOT NULL
         );`);
-        console.log(`Table 'travels' succesfuly created!`)
+        console.log(`Table 'travels' successfuly created!`)
 
         await pool.query(`
-            CREATE IF NOT EXISTS TABLE finances (
+            CREATE TABLE IF NOT EXISTS finances (
                 TransactionID SERIAL UNIQUE PRIMARY KEY,
                 TotalMoney INT NOT NULL,
                 TotalChanged INT NOT NULL,
-                TransactionDate DATE NOT NULL
-        );`);
-        console.log(`Table 'finances' succesfuly created!`);
+                TransactionDate TIMESTAMP NOT NULL
+            );
+        `);
+        console.log(`Table 'finances' successfuly created!`);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS travelers (
+                TravelerID SERIAL UNIQUE PRIMARY KEY,
+                tName varchar(255) UNIQUE NOT NULL,
+                tPass varchar(255) NOT NULL,
+                TravelerMoney FLOAT NOT NULL,
+                Travels INT[]
+            );
+        `);
+        console.log(`Table 'travelers' successfuly created!`)
 
     } catch (err) {
         result.message = `Error during table creation:
