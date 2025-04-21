@@ -78,7 +78,7 @@ async function createTables() {
                 tPass varchar(255) NOT NULL,
                 TravelerMoney FLOAT NOT NULL,
                 Travels INT[],
-                AcessLevel INT DEFAULT 1
+                AccessLevel INT DEFAULT 1
             );
         `);
         console.log(`Table 'travelers' successfuly created!`)

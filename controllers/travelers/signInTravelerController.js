@@ -2,6 +2,7 @@ import genResult from "../../results";
 import pool from "../../db";
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
+import uuid from 'uuid';
 
 async function checkHashedPass(passwd, hash) {
     const result = genResult();
@@ -93,6 +94,24 @@ async function signInRouter(req, res) {
     const {tn, tp} = req.body;
 
     const callSignIn = await signIn(tn, tp);
+    const {rows: user} = await pool.query(`
+        SELECT TravelerID, AccessLevel FROM travelers WHERE tName = ($1)`
+    , [tn]);
+
+    if (callSignIn.success) {
+        const sessionID = uuid.v4();
+        const sessionAccessLevel = user[0].accesslevel;
+        const sessionUserID = user[0].travelerid;
+
+        const cookie4set = {
+            sessionID: sessionID,
+            userID: sessionUserID,
+            AccessLevel: sessionAccessLevel
+        };
+        req.session.cookie4Set = cookie4Set;
+        req.session.cookie.expires = new Date(Date.now() + 259200000);
+    };
+
     res.status(callSignIn.status).json(callSignIn);
 };
 
