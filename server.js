@@ -13,7 +13,8 @@ const __dirname = dirname(__filename);
 
 const PostgreSQLStore = connectPgSimple(session);
 
-import signUpTravelerRoute from './routes/travelers/signUpTravelerRoute.js'
+import signUpTravelerRoute from './routes/travelers/signUpTravelerRoute.js';
+import signInTravelerRoute from './routes/travelers/signInTravelerRoute.js';
 
 const app = e();
 app.use(cors());
@@ -44,6 +45,7 @@ app.use(session({
 const PORT = process.env.PORT || 3001;
 
 app.use(signUpTravelerRoute);
+app.use(signInTravelerRoute);
 
 app.listen(PORT,
     console.log(`Server running on port: ${PORT}!`)
