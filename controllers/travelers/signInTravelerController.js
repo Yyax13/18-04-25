@@ -15,11 +15,11 @@ async function checkHashedPass(passwd, hash) {
         };
 
     } catch (err) {
-        result.success = false,
+        result.success = false;
         result.message = `
         Internal server error in checkHashedPass():
         Error message: ${err.message},
-        Error: ${err}`;
+        Error: ${err.stack}`;
         result.others = {
             error: err
         };
@@ -27,8 +27,7 @@ async function checkHashedPass(passwd, hash) {
         console.error(result.message);
 
     } finally {
-        return result
-
-    };
+        return result;
+    }
 };
 
