@@ -1,3 +1,63 @@
+import 'dotenv/config'
+import e from 'express';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path'; 
+import path from 'path';
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import pool from './db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const PostgreSQLStore = connectPgSimple(session);
+
+import signUpTravelerRoute from './routes/travelers/signUpTravelerRoute.js';
+import signInTravelerRoute from './routes/travelers/signInTravelerRoute.js';
+
+const app = e();
+app.use(cors());
+app.use(e.json());
+app.use(e.static(path.join(__dirname, "public")));
+app.use(session({
+    store: new PostgreSQLStore({
+        pool: pool,
+        tableName: 'session-store_table',
+        createTableIfMissing: true
+    }),
+    secret: [
+        process.env.SESSION_Secret_1, 
+        process.env.SESSION_Secret_2,
+        process.env.SESSION_Secret_3, 
+        process.env.SESSION_Secret_4, 
+        process.env.SESSION_Secret_5
+    ],
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.ENV_IsInProd,
+        maxAge: 86400000, // 1h
+        httpOnly: true
+    }
+}));
+
+const PORT = process.env.PORT || 3001;
+
+app.use(signUpTravelerRoute);
+app.use(signInTravelerRoute);
+
+app.listen(PORT,
+    console.log(`Server running on port: ${PORT}!`)
+);
+
+
+esse era o server.js
+agr o controller e a rota:
+
+controller:
+
+
 import genResult from "../../results.js";
 import pool from "../../db.js";
 import bcrypt from 'bcrypt';
@@ -130,3 +190,53 @@ async function signInRouter(req, res) {
 };
 
 export default signInRouter;
+
+
+rota:
+
+import e from "express";
+import signInRouter from "../../controllers/travelers/signInTravelerController.js";
+
+const r = e.Router();
+
+r.post('/api/signIn', signInRouter);
+
+export default r
+
+
+saida:
+
+
+
+> 18-04-25@1.0.0 dev
+> nodemon server.js
+
+[nodemon] 3.1.9
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node server.js`
+Successfuly connected!
+Server running on port: 3001!
+Table 'planes' successfuly created!
+Table 'travels' successfuly created!
+Table 'finances' successfuly created!
+Table 'travelers' successfuly created!
+User yyax succesfuly signed In
+uuid before
+uuid after
+alevel before
+alevel after
+uid before
+uid after
+cookie set before
+cookie set after
+session.cookie4set before
+session.cookie4set after
+expires before
+expires after
+res after
+
+
+mas dai no postman, nenhum cookie é setado
+oq fazer?

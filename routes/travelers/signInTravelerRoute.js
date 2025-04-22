@@ -1,5 +1,5 @@
 import e from "express";
-import signInRouter from "../../controllers/travelers/signInTravelerController";
+import signInRouter from "../../controllers/travelers/signInTravelerController.js";
 
 const r = e.Router();
 
