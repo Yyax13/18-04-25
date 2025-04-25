@@ -36,7 +36,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: process.env.ENV_IsInProd,
+        secure: false,
         maxAge: 86400000, // 1h
         httpOnly: true
     }

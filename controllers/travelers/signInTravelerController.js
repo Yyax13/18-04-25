@@ -100,33 +100,20 @@ async function signInRouter(req, res) {
     , [tn]);
 
     if (callSignIn.success) {
-        console.log('uuid before');
         const sessionID = uuidv4();
-        console.log('uuid after');
-        console.log('alevel before');
         const sessionAccessLevel = user[0].accesslevel;
-        console.log('alevel after');
-        console.log('uid before');
         const sessionUserID = user[0].travelerid;
-        console.log('uid after');
         
-        console.log('cookie set before');
         const cookie4set = {
             sessionID: sessionID,
             userID: sessionUserID,
             AccessLevel: sessionAccessLevel
         };
-        console.log('cookie set after');
-        console.log('session.cookie4set before');
         req.session.cookie4set = cookie4set;
-        console.log('session.cookie4set after');
-        console.log('expires before');
         req.session.cookie.expires = new Date(Date.now() + 259200000);
-        console.log('expires after');
     };
 
     res.status(callSignIn.status).json(callSignIn);
-    console.log('res after');
 };
 
 export default signInRouter;
